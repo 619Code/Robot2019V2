@@ -1,6 +1,8 @@
 package frc.robot.maps;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+
 import java.util.ArrayList;
 
 public class RobotMap {
@@ -157,4 +159,16 @@ public class RobotMap {
     
     //current limit
     public static final int SPARK_LIMIT = 60;
+
+    //pathweaver constants
+    public static final double kS_VOLTS = 0.211;
+    public static final double kV_VOLT_SECONDS_PER_FOOT = 0.0699;
+    public static final double kA_VOLT_SECONDS_PER_SQUARE_FOOT = 0.0117;
+    public static final double kP_DRIVE_VEL = 1.22;
+    public static final double kMAX_SPEED_FEET_PER_SECOND = 9.84252;
+    public static final double kMAX_ACCELERATION_FEET_PER_SECOND_SQUARED = 9.84252;
+    public static final double kRAMSETE_B = 6.56168;
+    public static final double kRAMSETE_ZETA = 2.29659;
+
+    public static final DifferentialDriveKinematics kDRIVE_KINEMATICS = new DifferentialDriveKinematics(RobotMap.ROBOT_WIDTH/12);
 }

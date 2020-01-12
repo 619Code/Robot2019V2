@@ -23,6 +23,7 @@ import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.drive.PathWeaverDrive;
 //import edu.wpi.first.wpilibj.Timer;
 //import frc.robot.auto.Auto;
 //import frc.robot.auto.type.LeftShip;
@@ -44,6 +45,7 @@ import frc.robot.vision.VisionProcess;
 
 public class Robot extends TimedRobot {
   public static WestCoastDrive sunKist;
+  public static PathWeaverDrive arachne;
 
   public static Arm Arm;
   public static Hatch Hatch;

@@ -1,0 +1,8 @@
+{
+  "lengthUnit": "Foot",
+  "maxVelocity": 11.6,
+  "maxAcceleration": 3.515,
+  "wheelBase": 1.4375,
+  "gameName": "Destination: Deep Space",
+  "outputDir": "../src/main/java/frc/robot/paths"
+}
