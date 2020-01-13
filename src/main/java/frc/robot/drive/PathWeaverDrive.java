@@ -22,8 +22,10 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.maps.RobotMap;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -44,7 +46,7 @@ public class PathWeaverDrive extends SubsystemBase {
     private final AHRS m_gyro = new AHRS(Port.kMXP);
 
     private DifferentialDriveOdometry m_odometry;
-    
+
     public PathWeaverDrive() {
         resetEncoders();
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
@@ -55,13 +57,13 @@ public class PathWeaverDrive extends SubsystemBase {
         m_odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoderInches(), getRightEncoderInches());
     }
 
-    //return is in incorrect unit
+    // return is in incorrect unit
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(leftMaster.getEncoder().getVelocity(), rightMaster.getEncoder().getVelocity())
+        return new DifferentialDriveWheelSpeeds(leftMaster.getEncoder().getVelocity(), rightMaster.getEncoder().getVelocity());
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -106,18 +108,18 @@ public class PathWeaverDrive extends SubsystemBase {
     public double getHeading() {
         return Math.IEEEremainder(m_gyro.getAngle(), 360);
     }
-    
-    public Command getAutonomousCommand() {
+
+    public SequentialCommandGroup getAutonomousCommand() {
         var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(RobotMap.kS_VOLTS, RobotMap.kV_VOLT_SECONDS_PER_FOOT, RobotMap.kA_VOLT_SECONDS_PER_SQUARE_FOOT), RobotMap.kDRIVE_KINEMATICS, 10);
 
         TrajectoryConfig config = new TrajectoryConfig(RobotMap.kMAX_SPEED_FEET_PER_SECOND, RobotMap.kMAX_ACCELERATION_FEET_PER_SECOND_SQUARED).setKinematics(RobotMap.kDRIVE_KINEMATICS).addConstraint(autoVoltageConstraint);
 
         Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(1, 1)), new Pose2d(3, 0, new Rotation2d(0)), config);
     
-        RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, arachne::getPose, new RamseteController(RobotMap.kRAMSETE_B, RobotMap.kRAMSETE_ZETA),
-        new SimpleMotorFeedforward(RobotMap.kS_VOLTS, RobotMap.kV_VOLT_SECONDS_PER_FOOT, RobotMap.kA_VOLT_SECONDS_PER_SQUARE_FOOT), RobotMap.kDRIVE_KINEMATICS, arachne::getWheelSpeeds,
-        new PIDController(RobotMap.kP_DRIVE_VEL, 0, 0), new PIDController(RobotMap.kP_DRIVE_VEL, 0, 0), arachne::tankDriveVolts, arachne);
+        RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, Robot.arachne::getPose, new RamseteController(RobotMap.kRAMSETE_B, RobotMap.kRAMSETE_ZETA),
+        new SimpleMotorFeedforward(RobotMap.kS_VOLTS, RobotMap.kV_VOLT_SECONDS_PER_FOOT, RobotMap.kA_VOLT_SECONDS_PER_SQUARE_FOOT), RobotMap.kDRIVE_KINEMATICS, Robot.arachne::getWheelSpeeds,
+        new PIDController(RobotMap.kP_DRIVE_VEL, 0, 0), new PIDController(RobotMap.kP_DRIVE_VEL, 0, 0), Robot.arachne::tankDriveVolts, Robot.arachne);
 
-        return ramseteCommand.andThen(() -> arachne.tankDriveVolts(0, 0));
+        return ramseteCommand.andThen(() -> Robot.arachne.tankDriveVolts(0, 0));
     }
 }
